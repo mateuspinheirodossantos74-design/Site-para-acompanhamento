@@ -7,6 +7,8 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 from pathlib import Path
+import datetime
+import streamlit.components.v1 as components
 
 # ----------------------
 # TEMA VISUAL + CSS RESPONSIVO
@@ -19,19 +21,28 @@ def _set_theme_black():
         /* Fundo e texto */
         .stApp { background-color: #000000; color: #FFFFFF; }
 
+        /* Centralizado helper */
+        .centralizado { text-align: center; color: white; }
+
         /* Cartões */
-        .card { 
-            background-color: rgba(255,255,255,0.05); 
-            border-radius: 15px; 
-            padding: 18px; 
-            text-align: center; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+        .card {
+            background-color: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 18px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: 0.25s;
+        }
+        .card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 25px rgba(255,255,255,0.18);
+            cursor: pointer;
         }
         .status-label { font-size: 28px; font-weight: bold; }
         .value-label { font-size: 28px; font-weight: bold; }
         .small-muted { color: rgba(255,255,255,0.8); font-size: 18px; }
 
-        /* Botão principal */
+        /* Botão principal (estiliza o st.button padrão)*/
         div.stButton > button:first-child {
             background-color: #1f1f1f;
             color: white;
@@ -40,6 +51,11 @@ def _set_theme_black():
             border-radius: 10px;
             border: 1px solid white;
             width: 100%;
+            transition: 0.25s;
+        }
+        div.stButton > button:first-child:hover {
+            background-color: #333333;
+            transform: scale(1.01);
         }
 
         /* Botões de download */
@@ -63,10 +79,46 @@ def _set_theme_black():
             color: white !important;
         }
 
+        /* Relógio (direita) */
+        .clock-container {
+            text-align: right;
+            color: white;
+        }
+        .clock-date {
+            font-size: 30px;
+            font-weight: 600;
+            margin: 0;
+        }
+        .clock-time {
+            font-size: 42px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Pequeno texto de atualização automática */
+        .auto-refresh-note {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
         /* Tabela responsiva */
         .dataframe {
             overflow-x: auto;
             display: block;
+        }
+
+        /* Rodapé */
+        .rodape {
+            text-align: center;
+            margin-top: 40px;
+            color: rgba(255,255,255,0.7);
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .rodape:hover {
+            color: white;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
         }
 
         /* -------------------- */
@@ -81,15 +133,22 @@ def _set_theme_black():
             div.stDownloadButton > button { font-size: 14px !important; padding: 8px 10px !important; }
             .card { padding: 10px; margin-bottom: 10px; }
             .stSelectbox, .stTextInput { font-size: 14px !important; }
+            .clock-date { font-size: 18px; }
+            .clock-time { font-size: 26px; }
+            .clock-container { text-align: center; }
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
+# ----------------------
+# CARREGAR BASE (COM TRATAMENTO)
+# ----------------------
 def load_base_excel(path_file: str):
     """Lê a planilha Base site.xlsx com card estilizado quando o arquivo está em uso."""
     try:
+        # Mantemos o comportamento original: sheet_name='BASE'
         return pd.read_excel(path_file, sheet_name='BASE')
 
     except PermissionError:
@@ -144,9 +203,9 @@ def load_base_excel(path_file: str):
         """, unsafe_allow_html=True)
 
         # === BOTÃO EXTRA MANUAL ===
-        st.button("🔄 Atualizar agora", key="manual_reload", help="Clique para tentar novamente", type="primary")
+        st.button("🔄 Atualizar agora", key="manual_reload", help="Clique para tentar novamente")
 
-        # === AUTO-RELOAD AUTOMÁTICO (10 segundos) ===
+        # === AUTO-RELOAD AUTOMÁTICO (10 segundos) - comportamento anterior em caso de arquivo travado ===
         st.markdown("""
             <meta http-equiv="refresh" content="10">
         """, unsafe_allow_html=True)
@@ -156,8 +215,6 @@ def load_base_excel(path_file: str):
     except Exception as e:
         st.error(f"⚠️ Erro inesperado ao carregar a base:<br>{e}", unsafe_allow_html=True)
         st.stop()
-
-
 
 # ----------------------
 # DOWNLOAD HELPER
@@ -184,29 +241,111 @@ def render_inicio(path_base_excel: str | Path):
 
     # Título
     st.markdown("<h1 class='centralizado'>CD 1200</h1>", unsafe_allow_html=True)
-    st.markdown("---")
 
     # ----------------------
-    # LOGO E BOTÃO ATUALIZAR SITE
+    # RELÓGIO FUNCIONAL (components.html) - alinhado à direita em linha separada
+    # ----------------------
+    clock_col1, clock_col2 = st.columns([6, 6])
+    with clock_col1:
+        st.write("")  # espaço à esquerda
+    with clock_col2:
+        # Use components.html para garantir que o JS rode corretamente (não seja apagado)
+        components.html(
+            """
+            <div class="clock-container">
+                <div id="clock-date" class="clock-date">--/--/----</div>
+                <div id="clock-time" class="clock-time">--:--:--</div>
+            </div>
+
+            <script>
+            // Funções de formatação
+            function pad(v){ return v.toString().padStart(2,'0'); }
+
+            function updateClock(){
+                const now = new Date();
+                // weekday em pt-BR quando disponível
+                const weekday = now.toLocaleDateString('pt-BR', { weekday: 'long' });
+                const day = pad(now.getDate());
+                const month = now.toLocaleDateString('pt-BR', { month: 'short' });
+                const year = now.getFullYear();
+                const hours = pad(now.getHours());
+                const minutes = pad(now.getMinutes());
+                const seconds = pad(now.getSeconds());
+
+                const dateStr = weekday + ", " + day + " " + month + " " + year;
+                const timeStr = hours + ":" + minutes + ":" + seconds;
+
+                var dElem = document.getElementById("clock-date");
+                var tElem = document.getElementById("clock-time");
+                if (dElem) dElem.innerText = dateStr;
+                if (tElem) tElem.innerText = timeStr;
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+            </script>
+            """,
+            height=140,
+        )
+
+    # ----------------------
+    # BOTÃO LOGO + ATUALIZAR MANUAL
     # ----------------------
     col1, col2, col3 = st.columns([6, 2, 2])
     with col3:
         st.image(r"C:\Users\2960007532\Documents\SITE STREAM LIT\Imagens\Logo.png", use_container_width=True)
         atualizar = st.button("🔄 Atualizar site")
 
-    # Carregar base
+    st.markdown("---")
+
+    # Carregar base (tratamento mantém comportamento original)
+    # Se PermissionError ocorrer, load_base_excel exibe card e st.stop() — sem prosseguir
     if "df_base" not in st.session_state or atualizar:
         st.session_state.df_base = load_base_excel(path_base_excel)
 
     df = st.session_state.df_base
 
-    if df.empty:
+    if df is None or (hasattr(df, "empty") and df.empty):
         st.warning("Base vazia ou não carregada.")
         return
 
     # ----------------------
+    # AGENDAR AUTO-REFRESH (sem recarregar página inteira)
+    # ----------------------
+    # Envia uma mensagem para o iframe pai pedindo rerun do Streamlit a cada 60s.
+    # Isso reexecuta o app mantendo session_state (filtros) — não usa meta refresh.
+    components.html(
+        """
+        <script>
+        // Rerun do Streamlit sem reload completo da página (preserva selects / session_state).
+        (function(){
+            // evita múltiplas timers em recarregamentos sucessivos verificando flag
+            if (!window.__streamlit_rerun_interval) {
+                window.__streamlit_rerun_interval = setInterval(function(){
+                    try {
+                        window.parent.postMessage({ type: 'streamlit:rerun' }, '*');
+                    } catch(e) {
+                        // fallback silencioso
+                        console.log('rerun postMessage error', e);
+                    }
+                }, 60000); // 60000 ms = 60s
+            }
+        })();
+        </script>
+        """,
+        height=0,
+    )
+
+    # nota visível para o usuário
+    st.markdown(
+        """<div class="auto-refresh-note">Acompanhamento em fase de desenvolvimento.</div>""",
+        unsafe_allow_html=True,
+    )
+
+    # ----------------------
     # CONFIGURAÇÃO DE FILTROS
     # ----------------------
+    # Mantive exatamente as mesmas colunas via iloc conforme seu código original
     col_setor = df.iloc[:, 31]      # Setor
     col_demanda = df.iloc[:, 34]    # Demanda
     col_filial = df.iloc[:, 6]      # Filial Destino
@@ -329,10 +468,10 @@ def render_inicio(path_base_excel: str | Path):
         unsafe_allow_html=True,
     )
 
+
 # ----------------------
 # EXECUÇÃO STANDALONE
 # ----------------------
 if __name__ == "__main__":
     st.set_page_config(page_title="Novosite - Início", layout="wide")
     render_inicio(r"C:\Users\2960007532\Documents\SITE STREAM LIT\Script Base Site\Site\Base site.xlsx")
-

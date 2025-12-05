@@ -126,7 +126,7 @@ def box_to_num(x):
 # ===========================
 # TABELA SEM AUDIT
 # ===========================
-st.subheader("📄 Relatorio pakced")
+st.subheader("📄 Relatorio packed")
 
 statuses_sem = sorted(df_f["Status oLPN"].replace("nan", "").dropna().unique().tolist())
 f_status_sem = st.multiselect("Status oLPN (somente tabela SEM Audit):", statuses_sem, key="status_sem")

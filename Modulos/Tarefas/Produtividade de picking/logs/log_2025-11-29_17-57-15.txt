@@ -1,0 +1,27 @@
+[2025-11-29 17:57:32] 🧹 Limpando pasta de downloads (início)...
+[2025-11-29 17:57:32]    - removido: 5.03 - Produtividade de Packing - Packed por hora.csv
+[2025-11-29 17:57:32] 📂 Pasta de downloads limpa.
+
+[2025-11-29 17:57:39] ✅ Página carregada, iniciando login e seleção de parâmetros...
+[2025-11-29 17:57:41] ✅ Tipo de login selecionado.
+[2025-11-29 17:57:44] ✅ 'VIAV Users' clicado.
+[2025-11-29 17:57:45] 📨 Matrícula enviada.
+[2025-11-29 17:57:45] 🔐 Senha digitada.
+[2025-11-29 17:57:47] ➡ Tentativa de envio da senha executada.
+[2025-11-29 17:57:48] ✅ Botão 'Sim' clicado.
+[2025-11-29 17:57:48] --- Selecionando unidade 1200 (Jundiaí) ---
+[2025-11-29 17:57:56] ✅ Unidade 1200 selecionada.
+[2025-11-29 17:57:56] --- Selecionando BOXES ---
+[2025-11-29 17:57:56] ✅ Box selecionado: S11 - TRANSF. LOJA VIA DEPOSITO BOA
+[2025-11-29 17:57:57] ✅ Box selecionado: S12 - TRANSF.LOJA VIA DEPOSITO QEB
+[2025-11-29 17:57:57] ✅ Box selecionado: S13 - ABASTECIMENTO DE LOJA BOA
+[2025-11-29 17:57:58] ✅ Box selecionado: S14 - ABASTECIMENTO DE LOJA QEB
+[2025-11-29 17:57:59] ✅ Box selecionado: S46 - ABASTECIMENTO RETIRA LOJA
+[2025-11-29 17:57:59] ✅ Box selecionado: S48 - ABASTECIMENTO CEL RJ
+[2025-11-29 17:58:00] ✅ Box selecionado: S53 - TRANSFERENCIA ENTRE CDS
+[2025-11-29 17:58:00] 🎯 Botão 'Concluir' clicado – download deve iniciar...
+[2025-11-29 17:58:00] 📥 Aguardando arquivo começando com '5.03 - Produtividade de Packing - Packed por hora' (timeout 180s)...
+[2025-11-29 18:00:41] ✅ Arquivo pronto: 5.03 - Produtividade de Packing - Packed por hora.csv (20790 bytes)
+[2025-11-29 18:00:41] 🎉 Download finalizado: c:\Users\2960007532\Documents\SITE STREAM LIT\Modulos\Tarefas\Produtividade de picking\downloads\5.03 - Produtividade de Packing - Packed por hora.csv
+[2025-11-29 18:00:41] 🔒 Finalizando — fechando apenas o Chrome que o script abriu...
+[2025-11-29 18:00:45] ✅ Finalizado. Profile temporário removido.

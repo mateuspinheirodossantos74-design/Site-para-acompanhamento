@@ -1,0 +1,18 @@
+[2025-11-29 19:23:19] 🧹 Limpando pasta de downloads (início)...
+[2025-11-29 19:23:19]    - removido: 5.03 - Produtividade de Packing - Packed por hora.csv
+[2025-11-29 19:23:19] 📂 Pasta de downloads limpa.
+
+[2025-11-29 19:23:28] ✅ Página carregada, iniciando login e seleção de parâmetros...
+[2025-11-29 19:23:29] ✅ Tipo de login selecionado.
+[2025-11-29 19:23:31] ✅ 'VIAV Users' clicado.
+[2025-11-29 19:23:33] 📨 Matrícula enviada.
+[2025-11-29 19:23:34] 🔐 Senha digitada.
+[2025-11-29 19:23:34] ➡ Tentativa de envio da senha executada.
+[2025-11-29 19:23:35] ✅ Botão 'Sim' clicado.
+[2025-11-29 19:23:35] --- Selecionando unidade 1200 (Jundiaí) ---
+[2025-11-29 19:24:05] ⚠ Erro ao selecionar unidade 1200: Message: 
+ — tentando outros iframes
+[2025-11-29 19:24:05] ❌ Fallback falhou: Não localizei o select de unidade em nenhum iframe.
+[2025-11-29 19:24:05] ❌ Erro crítico na automação: Não localizei o select de unidade em nenhum iframe.
+[2025-11-29 19:24:05] 🔒 Finalizando — fechando apenas o Chrome que o script abriu...
+[2025-11-29 19:24:08] ✅ Finalizado. Profile temporário removido.
