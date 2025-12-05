@@ -1,0 +1,17 @@
+# arquivos sensíveis
+Chave.txt
+*.key
+*.token
+*.env
+.env.*
+# caches e temporários
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+# IDEs
+.vscode/
+.idea/
+# arquivos do Office temporários
+~$*
