@@ -7,6 +7,7 @@ import os
 import time
 from streamlit_autorefresh import st_autorefresh
 
+
 # ======== CONFIGURAÇÕES DA PÁGINA ========
 st.set_page_config(page_title="Novo Site - Setor", layout="wide")
 
